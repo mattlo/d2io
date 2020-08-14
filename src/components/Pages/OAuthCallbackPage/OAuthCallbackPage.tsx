@@ -20,6 +20,8 @@ export default function OAuthCallbackPage({location} : RouteComponentProps) {
             res.data.expires_in
           );
 
+          console.log(res, auth);
+
           return getMembershipsForCurrentUser(auth)
             .then((membershipRes) => {
               if (!membershipRes.data.Response.destinyMemberships[0].membershipId) {
