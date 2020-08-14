@@ -17,7 +17,7 @@ export default function setUserAuth(
     accessToken: accessToken,
     membershipId: membershipId,
     expiresIn: Date.now() + (expiresIn * 1000),
-    membershipType : ''
+    membershipType : membershipType
   };
 
   if (accessToken) {
