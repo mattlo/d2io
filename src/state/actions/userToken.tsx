@@ -1,13 +1,23 @@
+export interface IUserAuth {
+  name : string,
+  accessToken : string,
+  membershipId : string;
+  membershipType : string;
+  expiresIn : number;
+}
+
 export default function setUserAuth(
   accessToken = '',
   expiresIn = 0,
-  membershipId = ''
-) {
+  membershipId = '',
+  membershipType = ''
+) : IUserAuth {
   const state = {
     name: 'userAuth',
     accessToken: accessToken,
     membershipId: membershipId,
-    expiresIn: Date.now() + (expiresIn * 1000)
+    expiresIn: Date.now() + (expiresIn * 1000),
+    membershipType : ''
   };
 
   if (accessToken) {
