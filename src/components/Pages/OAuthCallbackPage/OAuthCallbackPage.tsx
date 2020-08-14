@@ -41,7 +41,7 @@ export default function OAuthCallbackPage({location} : RouteComponentProps) {
 
   const isTokenStale = (Date.now() > state.userAuth.expiresIn);
 
-  if (!isTokenStale) {
+  if (!isTokenStale && state.userAuth.membershipId) {
     return <Redirect to="/d2io/optimizer" />;
   }
 
