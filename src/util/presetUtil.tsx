@@ -121,3 +121,14 @@ export function presetPvEPerfect(items : any[], totalFloor = 220) {
     ].filter(n => n).length >= 6
   );
 }
+
+
+export function presetPvPLowResilience(items : any[], totalFloor = 220) {
+  const {
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    resilience < 30
+  );
+}

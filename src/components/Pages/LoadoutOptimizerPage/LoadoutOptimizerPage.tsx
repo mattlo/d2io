@@ -11,7 +11,7 @@ import {CLASS_TYPE_HUNTER, CLASS_TYPE_TITAN, CLASS_TYPE_WARLOCK} from '../../../
 import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryUtil';
 import {
   getStatBuild, presetPvEPerfect,
-  presetPvEStandard,
+  presetPvEStandard, presetPvPLowResilience,
   presetPvPPerfect,
   presetPvPStandard
 } from '../../../util/presetUtil';
@@ -123,6 +123,10 @@ export default function LoadoutOptimizerPage() {
       preset = presetPvEPerfect;
     }
 
+    if (mode === 'PvP - Top Stats (Low Resilience)') {
+      preset = presetPvPLowResilience;
+    }
+
     helmets.forEach((helmet : any) => {
       gauntlets.forEach((gauntlet : any) => {
         chests.forEach((chest : any) => {
@@ -161,7 +165,8 @@ export default function LoadoutOptimizerPage() {
               'PvP - Standard',
               'PvP - Perfect',
               'PvE - Standard',
-              'PvE - Perfect'
+              'PvE - Perfect',
+              'PvP - Top Stats (Low Resilience)'
             ]}
             onChange={onModeChange}
             value={mode}
