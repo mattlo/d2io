@@ -104,7 +104,8 @@ export function presetPvEPerfect(items : any[], totalFloor = 220) {
     recovery,
     discipline,
     intellect,
-    strength
+    strength,
+    resilience
   } = getStatBuild(items);
 
   return (
@@ -115,7 +116,8 @@ export function presetPvEPerfect(items : any[], totalFloor = 220) {
       (recovery % 10) <= 2,
       (intellect % 10) <= 2,
       (discipline % 10) <= 2,
-      (strength % 10) <= 2
-    ].filter(n => n).length >= 5
+      (strength % 10) <= 2,
+      (resilience % 10) <= 2
+    ].filter(n => n).length >= 6
   );
 }
