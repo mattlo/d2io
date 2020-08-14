@@ -1,16 +1,29 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {css} from 'react-emotion';
+import uniqBy from 'lodash/uniqBy';
 import {useGlobalState} from '../../../hooks/useGlobalState';
 import {getManifest, getProfile} from '../../../api/bungieApi';
 import {setComponentContent, setManifest} from '../../../state/actions/manifest';
 import {setProfile} from '../../../state/actions/profile';
 import axios from 'axios';
+import {FormGroup, HTMLSelect, Spinner} from '@blueprintjs/core';
+import {CLASS_TYPE_HUNTER, CLASS_TYPE_TITAN, CLASS_TYPE_WARLOCK} from '../../../constants';
+import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryUtil';
+import {getStatBuild, presetPvEStandard, presetPvPStandard} from '../../../util/presetUtil';
+import ItemDisplay from '../../ItemDisplay/ItemDisplay';
 
 export default function LoadoutOptimizerPage() {
   const {state, dispatch} = useGlobalState();
   const [isLoading, setIsLoading] = useState(true);
+  const [mode, setMode] = useState('');
+  const [mainClass, setMainClass] = useState('');
+  const [exotic, setExotic] = useState('');
 
-  // get data
+  // // get data
   useEffect(() => {
+    // setIsLoading(false);
+    // return;
+
     // if there's a version, do nothings
     if (state.manifest.version) {
       setIsLoading(false);
@@ -31,27 +44,163 @@ export default function LoadoutOptimizerPage() {
           data: profile.data.Response
         }));
 
-        return axios({
-          url: `https://www.bungie.net${manifest.data.Response.jsonWorldComponentContentPaths.en.DestinyRecordDefinition}`
-        });
+        return Promise.all([
+          axios({
+            url: `https://www.bungie.net${manifest.data.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemLiteDefinition}`
+          }),
+          axios({
+            url: `https://www.bungie.net${manifest.data.Response.jsonWorldComponentContentPaths.en.DestinyPowerCapDefinition}`
+          })
+        ]);
       })
-      .then((res) => {
-        dispatch(setComponentContent(res.data))
+      .then(([res, powerCapRes]) => {
+        dispatch(setComponentContent({
+          ...res.data,
+          powercaps: powerCapRes.data
+        }))
         setIsLoading(false);
       });
   }, [state.userAuth, state.manifest, setIsLoading]);
 
+  const onModeChange = useCallback((e) => setMode(e.target.value), []);
+  const onMainClassChange = useCallback((e) => {
+    setMainClass(e.target.value);
+    setExotic('')
+  }, []);
+  const onExotic = useCallback((e) => setExotic(e.target.value), []);
+
+  const inventoryData = useMemo(() => {
+    if (
+      !state.profile.data
+      || !state.profile.data.profileInventory
+      || Object.keys(state.componentContent).length === 0
+    ) {
+      return [];
+    }
+
+    return getInventoryContent(
+      state.profile.data,
+      state.componentContent
+    )
+  }, [state.profile, state.componentContent]);
+
+  const categorizedItems = filterAndCategorize({
+    powerCap: 1260,
+    exoticItem: inventoryData.filter(i => i.itemHash.toString() === exotic.toString())[0] || {},
+    items: inventoryData,
+    mainClass
+  })
+
+  const exotics = uniqBy(
+    inventoryData.filter(i => i.exotic && i.classType.toString() === mainClass.toString()),
+    item => item.itemHash
+  );
+
+  const {helmets, gauntlets, chests, legs} = categorizedItems;
+
+  const combos : any[] = useMemo(() => {
+    const items : any = [];
+
+    if (mode === 'PvP - Standard') {
+      helmets.forEach((helmet : any) => {
+        gauntlets.forEach((gauntlet : any) => {
+          chests.forEach((chest : any) => {
+            legs.forEach((leg : any) => {
+              const set = [helmet, gauntlet, chest, leg];
+              if (presetPvPStandard(set)) {
+                items.push(({
+                  set,
+                  stats: getStatBuild(set)
+                }));
+              }
+            });
+          });
+        });
+      });
+    }
+
+    if (mode === 'PvE - Standard') {
+      helmets.forEach((helmet : any) => {
+        gauntlets.forEach((gauntlet : any) => {
+          chests.forEach((chest : any) => {
+            legs.forEach((leg : any) => {
+              const set = [helmet, gauntlet, chest, leg];
+              if (presetPvEStandard(set)) {
+                items.push(({
+                  set,
+                  stats: getStatBuild(set)
+                }));
+              }
+            });
+          });
+        });
+      });
+    }
+
+    return items.sort((a : any, b : any) => b.stats.total - a.stats.total);
+  }, [helmets, gauntlets, chests, legs, mode]);
+
+
+  console.log(combos);
+
   if (isLoading) {
     return (
       <div>
+        <Spinner className={css`justify-content: flex-start;`} />
         Loading profile data...
       </div>
     )
   }
 
   return (
-    <div>
-      loadout optimizer page test2
+    <div style={{padding: 15}}>
+      <div style={{width: 300}}>
+        <FormGroup label="Optimizer Presets">
+          <HTMLSelect
+            options={['', 'PvP - Standard', 'PvE - Standard']}
+            onChange={onModeChange}
+            value={mode}
+          />
+        </FormGroup>
+        <FormGroup label="Class">
+          <HTMLSelect
+            options={[
+              {label: '', value: ''},
+              {label: 'Titan', value: CLASS_TYPE_TITAN},
+              {label: 'Hunter', value: CLASS_TYPE_HUNTER},
+              {label: 'Warlock', value: CLASS_TYPE_WARLOCK}
+            ]}
+            onChange={onMainClassChange}
+            value={mainClass}
+          />
+        </FormGroup>
+        <FormGroup label="Exotic">
+          <HTMLSelect
+            options={[
+              {label: '', value: ''},
+              ...exotics.map(item => ({
+                label: item.content.displayProperties.name,
+                value: item.itemHash
+              }))
+            ]}
+            onChange={onExotic}
+            value={exotic}
+          />
+        </FormGroup>
+        <FormGroup label="Power Cap Minimum">
+          <strong>1260</strong>
+        </FormGroup>
+
+        <hr />
+      </div>
+
+      {combos.map(({set, stats}, index) => (
+        <ItemDisplay
+          key={index}
+          items={set}
+          stats={stats}
+        />
+      ))}
     </div>
   );
 }
