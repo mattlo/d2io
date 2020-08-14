@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import qs from 'query-string';
 import {RouteComponentProps, useHistory} from 'react-router';
-import getMembershipsForCurrentUser, {getAuthToken} from '../../bungieApi';
+import {getMembershipsForCurrentUser, getAuthToken} from '../../../api/bungieApi';
 import setUserAuth from '../../../state/actions/userToken';
 import {useGlobalState} from '../../../hooks/useGlobalState';
 
