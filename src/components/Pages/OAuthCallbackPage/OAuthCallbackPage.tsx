@@ -14,10 +14,17 @@ export default function OAuthCallbackPage({location} : RouteComponentProps) {
 
     if (query.code) {
       getAuthToken(query.code || '')
-        .then((res) => Promise.all([
-          res,
-          getMembershipsForCurrentUser(state.userAuth)
-        ]))
+        .then((res) => {
+          const auth = setUserAuth(
+            res.data.access_token,
+            res.data.expires_in
+          );
+
+          return Promise.all([
+            res,
+            getMembershipsForCurrentUser(auth)
+          ])
+        })
         .then(([res, membershipRes]) => {
           dispatch(setUserAuth(
             res.data.access_token,

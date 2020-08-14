@@ -1,6 +1,6 @@
 import React from 'react';
 import {useGlobalState} from '../../hooks/useGlobalState';
-import {AUTH_URL} from '../../constants';
+import {Redirect} from 'react-router';
 
 export function withAuth(Cmp : any) {
   return function Auth(props : any) {
@@ -11,8 +11,7 @@ export function withAuth(Cmp : any) {
 
     // // if there's no access token, redirect to auth page
     if (isTokenStale) {
-      window.location.href = AUTH_URL;
-      return <div />;
+      return <Redirect to="/d2io" />
     }
 
     return (
