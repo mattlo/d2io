@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import qs from 'query-string';
-import {RouteComponentProps, useHistory} from 'react-router';
+import {Redirect, RouteComponentProps, useHistory} from 'react-router';
 import {getMembershipsForCurrentUser, getAuthToken} from '../../../api/bungieApi';
 import setUserAuth from '../../../state/actions/userToken';
 import {useGlobalState} from '../../../hooks/useGlobalState';
@@ -25,11 +25,15 @@ export default function OAuthCallbackPage({location} : RouteComponentProps) {
             membershipRes.data.Response.destinyMemberships[0].membershipId,
             membershipRes.data.Response.destinyMemberships[0].membershipType
           ));
-
-          history.push('/d2io/optimizer');
         });
     }
   }, [dispatch, location, history]);
+
+  const isTokenStale = (Date.now() > state.userAuth.expiresIn);
+
+  if (!isTokenStale) {
+    return <Redirect to="/d2io/optimizer" />;
+  }
 
   return (
     <div>

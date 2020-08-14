@@ -9,7 +9,7 @@ export function httpBungie(route : string) {
 
 export function bungieRequestHeaders(userAuth ?: IUserAuth) {
   if (userAuth) {
-    const isTokenStale = userAuth.accessToken ? (Date.now() >= userAuth.expiresIn) : true;
+    const isTokenStale = userAuth.accessToken ? (Date.now() > userAuth.expiresIn) : true;
 
     // immediately redirect if the token is stale
     if (isTokenStale) {

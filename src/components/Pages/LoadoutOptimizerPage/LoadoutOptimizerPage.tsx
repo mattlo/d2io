@@ -31,7 +31,6 @@ export default function LoadoutOptimizerPage() {
           data: profile.data.Response
         }));
 
-
         return axios({
           url: `https://www.bungie.net${manifest.data.Response.jsonWorldComponentContentPaths.en.DestinyRecordDefinition}`
         });
@@ -41,8 +40,6 @@ export default function LoadoutOptimizerPage() {
         setIsLoading(false);
       });
   }, [state.userAuth, state.manifest, setIsLoading]);
-
-  console.log(state);
 
   if (isLoading) {
     return (
