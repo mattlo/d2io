@@ -9,7 +9,12 @@ import axios from 'axios';
 import {FormGroup, HTMLSelect, Spinner} from '@blueprintjs/core';
 import {CLASS_TYPE_HUNTER, CLASS_TYPE_TITAN, CLASS_TYPE_WARLOCK} from '../../../constants';
 import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryUtil';
-import {getStatBuild, presetPvEStandard, presetPvPStandard} from '../../../util/presetUtil';
+import {
+  getStatBuild, presetPvEPerfect,
+  presetPvEStandard,
+  presetPvPPerfect,
+  presetPvPStandard
+} from '../../../util/presetUtil';
 import ItemDisplay from '../../ItemDisplay/ItemDisplay';
 
 export default function LoadoutOptimizerPage() {
@@ -100,50 +105,44 @@ export default function LoadoutOptimizerPage() {
 
   const combos : any[] = useMemo(() => {
     const items : any = [];
+    let preset : any;
 
     if (mode === 'PvP - Standard') {
-      helmets.forEach((helmet : any) => {
-        gauntlets.forEach((gauntlet : any) => {
-          chests.forEach((chest : any) => {
-            legs.forEach((leg : any) => {
-              const set = [helmet, gauntlet, chest, leg];
-              if (presetPvPStandard(set)) {
-                items.push(({
-                  set,
-                  stats: getStatBuild(set)
-                }));
-              }
-            });
-          });
-        });
-      });
+      preset = presetPvPStandard;
+    }
+
+    if (mode === 'PvP - Perfect') {
+      preset = presetPvPPerfect;
     }
 
     if (mode === 'PvE - Standard') {
-      helmets.forEach((helmet : any) => {
-        gauntlets.forEach((gauntlet : any) => {
-          chests.forEach((chest : any) => {
-            legs.forEach((leg : any) => {
-              const set = [helmet, gauntlet, chest, leg];
-              if (presetPvEStandard(set)) {
-                items.push(({
-                  set,
-                  stats: getStatBuild(set)
-                }));
-              }
-            });
+      preset = presetPvEStandard;
+    }
+
+    if (mode === 'PvE - Perfect') {
+      preset = presetPvEPerfect;
+    }
+
+    helmets.forEach((helmet : any) => {
+      gauntlets.forEach((gauntlet : any) => {
+        chests.forEach((chest : any) => {
+          legs.forEach((leg : any) => {
+            const set = [helmet, gauntlet, chest, leg];
+            if (preset && preset(set)) {
+              items.push(({
+                set,
+                stats: getStatBuild(set)
+              }));
+            }
           });
         });
       });
-    }
+    });
 
     return items.sort((a : any, b : any) => b.stats.total - a.stats.total);
   }, [helmets, gauntlets, chests, legs, mode]);
 
-
-  console.log(combos);
-
-  if (isLoading) {
+  if (isLoading && inventoryData.length === 0) {
     return (
       <div>
         <Spinner className={css`justify-content: flex-start;`} />
@@ -154,10 +153,16 @@ export default function LoadoutOptimizerPage() {
 
   return (
     <div style={{padding: 15}}>
-      <div style={{width: 300}}>
+      <div style={{width: 320}}>
         <FormGroup label="Optimizer Presets">
           <HTMLSelect
-            options={['', 'PvP - Standard', 'PvE - Standard']}
+            options={[
+              '',
+              'PvP - Standard',
+              'PvP - Perfect',
+              'PvE - Standard',
+              'PvE - Perfect'
+            ]}
             onChange={onModeChange}
             value={mode}
           />
@@ -177,7 +182,7 @@ export default function LoadoutOptimizerPage() {
         <FormGroup label="Exotic">
           <HTMLSelect
             options={[
-              {label: '', value: ''},
+              {label: '-- No Exotic --', value: ''},
               ...exotics.map(item => ({
                 label: item.content.displayProperties.name,
                 value: item.itemHash
@@ -187,18 +192,24 @@ export default function LoadoutOptimizerPage() {
             value={exotic}
           />
         </FormGroup>
-        <FormGroup label="Power Cap Minimum">
-          <strong>1260</strong>
+        <FormGroup label="Applied Filters">
+          <strong>Power Cap Minimum: 1260 / High Gear Only</strong>
         </FormGroup>
 
         <hr />
       </div>
 
-      {combos.map(({set, stats}, index) => (
+      <div>
+        Results: {combos.length} (only showing top 50)
+        <br />
+      </div>
+
+      {mode && combos.filter((x: any, i : number) => i < 50).map(({set, stats}, index) => (
         <ItemDisplay
           key={index}
           items={set}
           stats={stats}
+          mode={mode}
         />
       ))}
     </div>

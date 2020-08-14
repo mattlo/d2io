@@ -1,12 +1,79 @@
 import {
+  MOD_TYPE_DISCIPLINE, MOD_TYPE_EXTRA_RESERVES,
+  MOD_TYPE_INTELLECT,
+  MOD_TYPE_MOBILITY,
+  MOD_TYPE_POWERFUL_FRIENDS,
+  MOD_TYPE_PRECISELY_CHARGED,
+  MOD_TYPE_PROTECTIVE_LIGHT,
+  MOD_TYPE_RADIANT_LIGHT,
+  MOD_TYPE_RECOVERY,
+  MOD_TYPE_RESILIENCE,
+  MOD_TYPE_STACK_ON_STACKS,
+  MOD_TYPE_STRENGTH, MOD_TYPE_SURPRISE_ATTACK,
+  MOD_TYPE_TRACTION,
   STAT_TYPE_DISCIPLINE,
   STAT_TYPE_INTELLECT,
-  STAT_TYPE_MOBILITY, STAT_TYPE_RECOVERY, STAT_TYPE_RESILIENCE,
+  STAT_TYPE_MOBILITY,
+  STAT_TYPE_RECOVERY,
+  STAT_TYPE_RESILIENCE,
   STAT_TYPE_STRENGTH
 } from '../constants';
 
 export interface Item {
 
+}
+
+export const MOD_BASELINE_CONFIG = [
+  [MOD_TYPE_MOBILITY, 'mobility', -10],
+  [MOD_TYPE_RECOVERY, 'recovery', -10],
+  [MOD_TYPE_RESILIENCE, 'resilience', -10],
+  [MOD_TYPE_STRENGTH, 'strength', -10],
+  [MOD_TYPE_INTELLECT, 'intellect', -10],
+  [MOD_TYPE_DISCIPLINE, 'discipline', -10],
+  [MOD_TYPE_TRACTION, 'mobility', -5],
+  [MOD_TYPE_RADIANT_LIGHT, 'strength', -20],
+  [MOD_TYPE_POWERFUL_FRIENDS, 'mobility', -20],
+  [MOD_TYPE_STACK_ON_STACKS, 'recovery', 10],
+  [MOD_TYPE_PRECISELY_CHARGED, 'discipline', 10],
+  [MOD_TYPE_PROTECTIVE_LIGHT, 'strength', 10],
+  [MOD_TYPE_EXTRA_RESERVES, 'intellect', 10],
+  [MOD_TYPE_SURPRISE_ATTACK, 'intellect', 10]
+]
+
+export function isModEquipped(hash : any, sockets : any) {
+  return sockets.some((socket : any) => socket.isEnabled && socket.plugHash.toString() === hash.toString());
+}
+
+export function applyBaseLineStats(item : any, mods : any, instanceData : any) {
+  const appliedMods = mods[item.itemInstanceId];
+
+  // do nothing if there's no mods to work wit
+  if (!appliedMods || appliedMods.sockets.length === 0) {
+    return item;
+  }
+
+  MOD_BASELINE_CONFIG.forEach(([hash, prop, value]) => {
+    if (isModEquipped(hash, appliedMods.sockets)) {
+      item[prop] += value;
+    }
+  });
+
+  // check for master worked items
+  const extraItemData = instanceData[item.itemInstanceId];
+  if (extraItemData && extraItemData.energy && extraItemData.energy.energyCapacity === 10) {
+    [
+      'mobility',
+      'recovery',
+      'resilience',
+      'strength',
+      'intellect',
+      'discipline'
+    ].forEach((stat) => {
+      item[stat] -= 2;
+    });
+  }
+
+  return item;
 }
 
 function shouldAddItem(exoticItem : any, item : any) {
@@ -83,6 +150,8 @@ export function getInventoryContent(profile : any, contentMap : any) {
     .map(key => profile.characterInventories.data[key].items);
 
   const stats = profile.itemComponents.stats.data;
+  const instanceData = profile.itemComponents.instances.data;
+  const modSlots = profile.itemComponents.sockets.data;
 
   const items = [
     ...vaultInventory,
@@ -110,4 +179,5 @@ export function getInventoryContent(profile : any, contentMap : any) {
       recovery: stats[item.itemInstanceId].stats[STAT_TYPE_RECOVERY].value,
       resilience: stats[item.itemInstanceId].stats[STAT_TYPE_RESILIENCE].value
     }))
+    .map(item => applyBaseLineStats(item, modSlots, instanceData))
 }

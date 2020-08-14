@@ -1,10 +1,33 @@
 import React from 'react';
 import {css} from 'react-emotion';
+import {getStatBuild} from '../../util/presetUtil';
 
 const divider = '---------------------------------------------------';
 const width = divider.length;
 
-export default function ItemDisplay({items, stats} : any) {
+export default function ItemDisplay({items, stats, mode} : any) {
+  const {
+    mobility,
+    recovery,
+    discipline,
+    intellect,
+    strength,
+    resilience,
+    total
+  } = stats;
+
+  const isPvP = mode.indexOf('PvP') >= 0;
+
+  const totalStats = [
+    ['Mobility', mobility, isPvP ? 35 : 10],
+    ['Resilience', resilience, 10],
+    ['Recovery', recovery, 10],
+    ['Discipline', discipline, 10],
+    ['Intellect', intellect, 10],
+    ['Strength', strength, isPvP ? 30 : 10],
+  ];
+
+
   return (
     <pre
       className={css`
@@ -15,8 +38,14 @@ export default function ItemDisplay({items, stats} : any) {
         padding: 10px;
       `}
     >
-      {`| ${'Stat Total'.padEnd(13, '.')}${stats.total} (max: 280)`.padEnd(width - 1) + '|'}
+
+      {`| ${'Stat Total'.padEnd(13, '.')}${total} (max: 280)`.padEnd(width - 1) + '|'}
       <br />
+      {totalStats.map(([statName, stat, bonus]) => (
+        <div key={statName}>
+          {`| ${statName.padEnd(13, '.')}${stat} (${stat+bonus})`.padEnd(width - 1) + '|'}
+        </div>
+      ))}
       {`| `.padEnd(width - 1) + '|'}
       <br />
       {items.map((item : any, index : any) => {
