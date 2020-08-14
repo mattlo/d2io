@@ -20,18 +20,19 @@ export default function OAuthCallbackPage({location} : RouteComponentProps) {
             res.data.expires_in
           );
 
-          return Promise.all([
-            res,
-            getMembershipsForCurrentUser(auth)
-          ])
-        })
-        .then(([res, membershipRes]) => {
-          dispatch(setUserAuth(
-            res.data.access_token,
-            res.data.expires_in,
-            membershipRes.data.Response.destinyMemberships[0].membershipId,
-            membershipRes.data.Response.destinyMemberships[0].membershipType
-          ));
+          return getMembershipsForCurrentUser(auth)
+            .then((membershipRes) => {
+              if (!membershipRes.data.Response.destinyMemberships[0].membershipId) {
+                throw new Error('failed to get membership id');
+              }
+
+              return dispatch(setUserAuth(
+                res.data.access_token,
+                res.data.expires_in,
+                membershipRes.data.Response.destinyMemberships[0].membershipId,
+                membershipRes.data.Response.destinyMemberships[0].membershipType
+              ));
+            });
         });
     }
   }, [dispatch, location, history]);

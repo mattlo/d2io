@@ -12,6 +12,7 @@ import OAuthCallbackPage from './components/Pages/OAuthCallbackPage/OAuthCallbac
 import LoadoutOptimizerPage from './components/Pages/LoadoutOptimizerPage/LoadoutOptimizerPage';
 import {withAuth} from './components/Auth/Auth';
 import {useAppReducer} from './hooks/useAppReducer';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 export type TRouteItem = [string, ComponentType];
 
@@ -40,11 +41,13 @@ function App() {
 
   return (
     <AppStateContext.Provider value={{state: JSON.parse(JSON.stringify(state)), dispatch}}>
-      <Router>
-        <Switch>
-          {routes}
-        </Switch>
-      </Router>
+      <ErrorBoundary>
+        <Router>
+          <Switch>
+            {routes}
+          </Switch>
+        </Router>
+      </ErrorBoundary>
     </AppStateContext.Provider>
   );
 }
