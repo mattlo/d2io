@@ -45,14 +45,14 @@ export function getAuthToken(code : string) {
 
 export function getMembershipsForCurrentUser(userAuth : IUserAuth) {
   return axios({
-    url: `${API_ROOT_PATH}/User/GetMembershipsForCurrentUser`,
+    url: `${API_ROOT_PATH}/User/GetMembershipsForCurrentUser/`,
     headers: bungieRequestHeaders(userAuth)
   });
 }
 
 export function getProfile(userAuth : IUserAuth) {
   return axios({
-    url: `https://www.bungie.net/Platform/Destiny2/${userAuth.membershipType}/Profile/${userAuth.membershipId}`,
+    url: `https://www.bungie.net/Platform/Destiny2/${userAuth.membershipType}/Profile/${userAuth.membershipId}/`,
     params: {
       components: '100,102,103,200,201,202,205,300,301,304,305,306,307,800,308,310,309,900,1100'
     },
@@ -62,7 +62,7 @@ export function getProfile(userAuth : IUserAuth) {
 
 export function getManifest() {
   return axios({
-    url: `${API_ROOT_PATH}/Destiny2/Manifest`,
+    url: `${API_ROOT_PATH}/Destiny2/Manifest/`,
     headers: bungieRequestHeaders()
   });
 }
