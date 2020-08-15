@@ -13,7 +13,7 @@ import {
   getStatBuild, presetPvEPerfect,
   presetPvEStandard, presetPvPLowResilience,
   presetPvPPerfect,
-  presetPvPStandard
+  presetPvPStandard, presetPvPStandardResilience
 } from '../../../util/presetUtil';
 import ItemDisplay from '../../ItemDisplay/ItemDisplay';
 
@@ -111,6 +111,10 @@ export default function LoadoutOptimizerPage() {
       preset = presetPvPStandard;
     }
 
+    if (mode === 'PvP - Standard (Low Resilience)') {
+      preset = presetPvPStandardResilience;
+    }
+
     if (mode === 'PvP - Perfect') {
       preset = presetPvPPerfect;
     }
@@ -163,10 +167,11 @@ export default function LoadoutOptimizerPage() {
             options={[
               '',
               'PvP - Standard',
+              'PvP - Standard (Low Resilience)',
               'PvP - Perfect',
               'PvE - Standard',
               'PvE - Perfect',
-              'PvP - Top Stats (Low Resilience)'
+              'PvP - Top Stats (Low Resilience)',
             ]}
             onChange={onModeChange}
             value={mode}
