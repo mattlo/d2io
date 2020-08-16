@@ -161,6 +161,28 @@ export function presetPvPLowResilience(items : any[], totalFloor = 220) {
   );
 }
 
+export function presetPvPSuperLowResilience(items : any[], totalFloor = 220) {
+  const {
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    resilience <= 10
+  );
+}
+
+export function presetPvPMinGear(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 59
+    && recovery >= 50
+  );
+}
+
 export function presetPvPLowGear(items : any[], totalFloor = 220) {
   const {
     mobility,
