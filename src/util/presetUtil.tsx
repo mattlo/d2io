@@ -178,8 +178,8 @@ export function presetPvPMinGear(items : any[], totalFloor = 220) {
   } = getStatBuild(items);
 
   return (
-    mobility >= 50
-    && recovery >= 50
+    mobility >= 30
+    && recovery >= 40
   );
 }
 
