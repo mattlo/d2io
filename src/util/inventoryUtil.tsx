@@ -150,6 +150,10 @@ export function filterAndCategorize({powerCap, exoticItem, items, mainClass} : a
 
 export function getInventoryContent(profile : any, contentMap : any) {
   const vaultInventory = profile.profileInventory.data.items;
+
+  const onCharacterInventories = Object.keys(profile.characterEquipment.data)
+    .map(key => profile.characterEquipment.data[key].items);
+
   const characterInventories = Object.keys(profile.characterInventories.data)
     .map(key => profile.characterInventories.data[key].items);
 
@@ -159,7 +163,8 @@ export function getInventoryContent(profile : any, contentMap : any) {
 
   const items = [
     ...vaultInventory,
-    ...characterInventories
+    ...characterInventories,
+    ...onCharacterInventories
   ];
 
   return items
