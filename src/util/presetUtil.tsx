@@ -157,6 +157,31 @@ export function presetPvPLowResilience(items : any[], totalFloor = 220) {
   } = getStatBuild(items);
 
   return (
-    resilience < 30
+    resilience < 20
+  );
+}
+
+export function presetPvPLowGear(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    discipline,
+    intellect,
+    strength,
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 59
+    // traction
+    && (mobility % 10) >= 5
+    && resilience <= 30
+    // must all be moderate levels of stats
+    && [
+      (recovery % 10) <= 4,
+      (intellect % 10) <= 4,
+      (discipline % 10) <= 4,
+      (strength % 10) <= 4
+    ].filter(n => n).length >= 4
   );
 }
