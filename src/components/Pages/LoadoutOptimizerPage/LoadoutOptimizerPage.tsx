@@ -12,7 +12,7 @@ import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryU
 import {
   getStatBuild, presetPvEPerfect,
   presetPvEStandard, presetPvPLowGear, presetPvPLowResilience, presetPvPMinGear,
-  presetPvPPerfect,
+  presetPvPPerfect, presetPvPPerfectLowResilience,
   presetPvPStandard, presetPvPStandardResilience, presetPvPSuperLowResilience
 } from '../../../util/presetUtil';
 import ItemDisplay from '../../ItemDisplay/ItemDisplay';
@@ -147,6 +147,10 @@ export default function LoadoutOptimizerPage() {
       preset = presetPvPMinGear;
     }
 
+    if (mode === 'PvP - Perfect (Low Resilience)') {
+      preset = presetPvPPerfectLowResilience;
+    }
+
     helmets.forEach((helmet : any) => {
       gauntlets.forEach((gauntlet : any) => {
         chests.forEach((chest : any) => {
@@ -185,6 +189,7 @@ export default function LoadoutOptimizerPage() {
               'PvP - Standard',
               'PvP - Standard (Low Resilience)',
               'PvP - Perfect',
+              'PvP - Perfect (Low Resilience)',
               'PvE - Standard',
               'PvE - Perfect',
               'PvP - Top Stats (Low Resilience)',

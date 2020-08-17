@@ -101,6 +101,31 @@ export function presetPvPPerfect(items : any[], totalFloor = 220) {
   );
 }
 
+export function presetPvPPerfectLowResilience(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    discipline,
+    intellect,
+    strength,
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    recovery >= 60
+    // traction
+    && (mobility % 10) >= 5
+    && resilience <= 20
+    // must all be moderate levels of stats
+    && [
+      (recovery % 10) <= 2,
+      (intellect % 10) <= 2,
+      (discipline % 10) <= 2,
+      (strength % 10) <= 2
+    ].filter(n => n).length >= 4
+  );
+}
+
 export function presetPvEStandard(items : any[], totalFloor = 220) {
   const {
     mobility,
