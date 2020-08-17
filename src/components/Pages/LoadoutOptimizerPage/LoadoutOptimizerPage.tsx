@@ -20,7 +20,7 @@ import ItemDisplay from '../../ItemDisplay/ItemDisplay';
 export default function LoadoutOptimizerPage() {
   const {state, dispatch} = useGlobalState();
   const [isLoading, setIsLoading] = useState(true);
-  const [mode, setMode] = useState('');
+  const [mode, setMode] = useState('No Optimization');
   const [mainClass, setMainClass] = useState('');
   const [exotic, setExotic] = useState('');
 
@@ -107,6 +107,10 @@ export default function LoadoutOptimizerPage() {
     const items : any = [];
     let preset : any;
 
+    if (mode === 'No Optimization') {
+      preset = () => true;
+    }
+
     if (mode === 'PvP - Standard') {
       preset = presetPvPStandard;
     }
@@ -177,7 +181,7 @@ export default function LoadoutOptimizerPage() {
         <FormGroup label="Optimizer Presets">
           <HTMLSelect
             options={[
-              '',
+              'No Optimization',
               'PvP - Standard',
               'PvP - Standard (Low Resilience)',
               'PvP - Perfect',
@@ -185,7 +189,6 @@ export default function LoadoutOptimizerPage() {
               'PvE - Perfect',
               'PvP - Top Stats (Low Resilience)',
               'PvP - Top Stats (Super Low Resilience)',
-              'PvP - Top Stats (Low Resilience)',
               'PvP - Low Gear (Low Resilience)',
               'PvP - Minimum Gear'
             ]}
@@ -230,7 +233,7 @@ export default function LoadoutOptimizerPage() {
         <br />
       </div>
 
-      {mode && combos.filter((x: any, i : number) => i < 50).map(({set, stats}, index) => (
+      {mode && combos.filter((x : any, i : number) => i < 50).map(({set, stats}, index) => (
         <ItemDisplay
           key={index}
           items={set}
