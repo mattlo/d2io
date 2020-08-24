@@ -1,4 +1,5 @@
 import {
+  MOD_TYPE_CHARGE_HARVESTER,
   MOD_TYPE_DISCIPLINE, MOD_TYPE_EXTRA_RESERVES,
   MOD_TYPE_INTELLECT,
   MOD_TYPE_MOBILITY, MOD_TYPE_MOBILITY2,
@@ -41,7 +42,9 @@ export const MOD_BASELINE_CONFIG = [
   [MOD_TYPE_PRECISELY_CHARGED, 'discipline', 10],
   [MOD_TYPE_PROTECTIVE_LIGHT, 'strength', 10],
   [MOD_TYPE_EXTRA_RESERVES, 'intellect', 10],
-  [MOD_TYPE_SURPRISE_ATTACK, 'intellect', 10]
+  [MOD_TYPE_SURPRISE_ATTACK, 'intellect', 10],
+  // @TODO it's dependent on the class :/
+  // [MOD_TYPE_CHARGE_HARVESTER, '']
 ]
 
 export function isModEquipped(hash : any, sockets : any) {
