@@ -115,7 +115,8 @@ export function presetPvPPerfectLowResilience(items : any[], totalFloor = 220) {
     recovery >= 60
     // traction
     && (mobility % 10) >= 5
-    && resilience <= 20
+    && resilience >= 10
+    && resilience <= 12
     // must all be moderate levels of stats
     && [
       (recovery % 10) <= 2,
