@@ -193,6 +193,7 @@ export function presetPvPSuperLowResilience(items : any[], totalFloor = 220) {
 
   return (
     resilience <= 10
+    && resilience >= 8
   );
 }
 
