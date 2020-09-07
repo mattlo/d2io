@@ -234,3 +234,24 @@ export function presetPvPLowGear(items : any[], totalFloor = 220) {
     ].filter(n => n).length >= 4
   );
 }
+
+export function presetPvPUnchi1(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    discipline,
+    intellect,
+    strength,
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 59
+    && ((mobility + recovery)) >= ((59 + 100) - 50)
+    // traction
+    && (mobility % 10) >= 5
+    && resilience >= 10
+    && resilience <= 12
+    && (recovery % 10) <= 4
+  );
+}

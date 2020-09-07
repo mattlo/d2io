@@ -13,7 +13,7 @@ import {
   getStatBuild, presetPvEPerfect,
   presetPvEStandard, presetPvPLowGear, presetPvPLowResilience, presetPvPMinGear,
   presetPvPPerfect, presetPvPPerfectLowResilience,
-  presetPvPStandard, presetPvPStandardResilience, presetPvPSuperLowResilience
+  presetPvPStandard, presetPvPStandardResilience, presetPvPSuperLowResilience, presetPvPUnchi1
 } from '../../../util/presetUtil';
 import ItemDisplay from '../../ItemDisplay/ItemDisplay';
 
@@ -151,6 +151,10 @@ export default function LoadoutOptimizerPage() {
       preset = presetPvPPerfectLowResilience;
     }
 
+    if (mode === 'PvP - Unchi Mode (9-2-10 build)') {
+      preset = presetPvPUnchi1;
+    }
+
     helmets.forEach((helmet : any) => {
       gauntlets.forEach((gauntlet : any) => {
         chests.forEach((chest : any) => {
@@ -195,7 +199,8 @@ export default function LoadoutOptimizerPage() {
               'PvP - Top Stats (Low Resilience)',
               'PvP - Top Stats (Super Low Resilience)',
               'PvP - Low Gear (Low Resilience)',
-              'PvP - Minimum Gear'
+              'PvP - Minimum Gear',
+              'PvP - Unchi Mode (9-2-10 build)'
             ]}
             onChange={onModeChange}
             value={mode}
@@ -234,11 +239,11 @@ export default function LoadoutOptimizerPage() {
       </div>
 
       <div>
-        Results: {combos.length} (only showing top 50)
+        Results: {combos.length} (only showing top 1000)
         <br />
       </div>
 
-      {mode && combos.filter((x : any, i : number) => i < 50).map(({set, stats}, index) => (
+      {mode && combos.filter((x : any, i : number) => i < 1000).map(({set, stats}, index) => (
         <ItemDisplay
           key={index}
           items={set}
