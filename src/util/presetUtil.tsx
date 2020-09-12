@@ -255,3 +255,64 @@ export function presetPvPUnchi1(items : any[], totalFloor = 220) {
     && (recovery % 10) <= 4
   );
 }
+
+export function presetPvPUnchiWarlock(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    discipline,
+    intellect,
+    strength,
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 19
+    && ((mobility + recovery)) >= ((19 + 100) - 50)
+    // traction
+    && (mobility % 10) >= 5
+    && resilience >= 10
+    && resilience <= 22
+    && (recovery % 10) <= 4
+    && (intellect % 10) <= 4
+    && intellect >= 60
+  );
+}
+
+export function presetPvPUnchiTitan(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    discipline,
+    intellect,
+    strength,
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 19
+    && ((mobility + recovery + resilience)) >= ((19 + 100 + 50) - 50)
+    // traction
+    && (mobility % 10) >= 5
+    && resilience >= 40
+    && (recovery % 10) <= 4
+    && (resilience % 10) <= 4
+  );
+}
+
+export const presetList = [
+  ['No Optimization', () => true],
+  ['PvP - Standard', presetPvPStandard],
+  ['PvP - Standard (Low Resilience)', presetPvPStandardResilience],
+  ['PvP - Perfect', presetPvPPerfect],
+  ['PvE - Standard', presetPvEStandard],
+  ['PvE - Perfect', presetPvEPerfect],
+  ['PvP - Top Stats (Low Resilience)', presetPvPLowResilience],
+  ['PvP - Low Gear (Low Resilience)', presetPvPLowGear],
+  ['PvP - Top Stats (Super Low Resilience)', presetPvPSuperLowResilience],
+  ['PvP - Minimum Gear', presetPvPMinGear],
+  ['PvP - Perfect (Low Resilience)', presetPvPPerfectLowResilience],
+  ['PvP - Unchi Hunter', presetPvPUnchi1],
+  ['PvP - Unchi Warlock',presetPvPUnchiWarlock ],
+  ['PvP - Unchi Titan',presetPvPUnchiTitan],
+];

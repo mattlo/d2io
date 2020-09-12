@@ -10,7 +10,7 @@ import {FormGroup, HTMLSelect, Spinner} from '@blueprintjs/core';
 import {CLASS_TYPE_HUNTER, CLASS_TYPE_TITAN, CLASS_TYPE_WARLOCK} from '../../../constants';
 import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryUtil';
 import {
-  getStatBuild, presetPvEPerfect,
+  getStatBuild, presetList, presetPvEPerfect,
   presetPvEStandard, presetPvPLowGear, presetPvPLowResilience, presetPvPMinGear,
   presetPvPPerfect, presetPvPPerfectLowResilience,
   presetPvPStandard, presetPvPStandardResilience, presetPvPSuperLowResilience, presetPvPUnchi1
@@ -107,53 +107,8 @@ export default function LoadoutOptimizerPage() {
     const items : any = [];
     let preset : any;
 
-    if (mode === 'No Optimization') {
-      preset = () => true;
-    }
-
-    if (mode === 'PvP - Standard') {
-      preset = presetPvPStandard;
-    }
-
-    if (mode === 'PvP - Standard (Low Resilience)') {
-      preset = presetPvPStandardResilience;
-    }
-
-    if (mode === 'PvP - Perfect') {
-      preset = presetPvPPerfect;
-    }
-
-    if (mode === 'PvE - Standard') {
-      preset = presetPvEStandard;
-    }
-
-    if (mode === 'PvE - Perfect') {
-      preset = presetPvEPerfect;
-    }
-
-    if (mode === 'PvP - Top Stats (Low Resilience)') {
-      preset = presetPvPLowResilience;
-    }
-
-    if (mode === 'PvP - Low Gear (Low Resilience)') {
-      preset = presetPvPLowGear;
-    }
-
-    if (mode === 'PvP - Top Stats (Super Low Resilience)') {
-      preset = presetPvPSuperLowResilience;
-    }
-
-    if (mode === 'PvP - Minimum Gear') {
-      preset = presetPvPMinGear;
-    }
-
-    if (mode === 'PvP - Perfect (Low Resilience)') {
-      preset = presetPvPPerfectLowResilience;
-    }
-
-    if (mode === 'PvP - Unchi Mode (9-2-10 build)') {
-      preset = presetPvPUnchi1;
-    }
+    const presetItem = presetList.find(([name]) => name === mode);
+    preset = presetItem ? presetItem[1] : () => true;
 
     helmets.forEach((helmet : any) => {
       gauntlets.forEach((gauntlet : any) => {
@@ -188,20 +143,7 @@ export default function LoadoutOptimizerPage() {
       <div style={{width: 320}}>
         <FormGroup label="Optimizer Presets">
           <HTMLSelect
-            options={[
-              'No Optimization',
-              'PvP - Standard',
-              'PvP - Standard (Low Resilience)',
-              'PvP - Perfect',
-              'PvP - Perfect (Low Resilience)',
-              'PvE - Standard',
-              'PvE - Perfect',
-              'PvP - Top Stats (Low Resilience)',
-              'PvP - Top Stats (Super Low Resilience)',
-              'PvP - Low Gear (Low Resilience)',
-              'PvP - Minimum Gear',
-              'PvP - Unchi Mode (9-2-10 build)'
-            ]}
+            options={presetList.map(([name]) => name) as string[]}
             onChange={onModeChange}
             value={mode}
           />
