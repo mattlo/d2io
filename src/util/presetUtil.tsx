@@ -290,13 +290,7 @@ export function presetPvPUnchiTitan(items : any[], totalFloor = 220) {
   } = getStatBuild(items);
 
   return (
-    mobility <= 19
-    && ((mobility + recovery + resilience)) >= ((19 + 100 + 50) - 50)
-    // traction
-    && (mobility % 10) >= 5
-    && resilience >= 40
-    && (recovery % 10) <= 4
-    && (resilience % 10) <= 4
+    (resilience + recovery) >= 100
   );
 }
 
@@ -314,5 +308,5 @@ export const presetList = [
   ['PvP - Perfect (Low Resilience)', presetPvPPerfectLowResilience],
   ['PvP - Unchi Hunter', presetPvPUnchi1],
   ['PvP - Unchi Warlock',presetPvPUnchiWarlock ],
-  ['PvP - Unchi Titan',presetPvPUnchiTitan],
+  ['PvP - Unchi Titan 6',presetPvPUnchiTitan],
 ];
