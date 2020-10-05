@@ -341,6 +341,195 @@ export function presetPvPWarlock(items : any[], totalFloor = 220) {
   );
 }
 
+export function presetPvEAbilitySpamHunter(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    mobility >= 50
+    && recovery >= 50
+    && resilience <= 30
+  );
+}
+
+export function presetPvEAbilitySpamWarlock(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 30
+    && recovery >= 50
+    && resilience <= 30
+  );
+}
+
+export function presetPvEAbilitySpamTitan(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience,
+    discipline,
+    intellect
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 30
+    && recovery >= 50
+    && resilience >= 50
+    && [
+      (mobility % 10) <= 4,
+      (recovery % 10) <= 4,
+      (intellect % 10) <= 4,
+      (resilience % 10) <= 4,
+      (discipline % 10) <= 4
+    ].filter(n => n).length >= 3
+  );
+}
+
+export function presetPvEAbilitySpamHunterStandard(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience,
+    discipline,
+    intellect
+  } = getStatBuild(items);
+
+  return (
+    mobility >= 50
+    && recovery >= 50
+    && resilience <= 30
+    && [
+      (mobility % 10) <= 4,
+      (recovery % 10) <= 4,
+      (intellect % 10) <= 4,
+      (resilience % 10) <= 4,
+      (discipline % 10) <= 4
+    ].filter(n => n).length >= 3
+  );
+}
+
+export function presetPvEAbilitySpamWarlockStandard(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience,
+    discipline,
+    intellect
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 30
+    && recovery >= 50
+    && resilience <= 30
+    && [
+      (mobility % 10) <= 4,
+      (recovery % 10) <= 4,
+      (intellect % 10) <= 4,
+      (resilience % 10) <= 4,
+      (discipline % 10) <= 4
+    ].filter(n => n).length >= 3
+  );
+}
+
+export function presetPvEAbilitySpamTitanStandard(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience,
+    discipline,
+    intellect
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 30
+    && recovery >= 50
+    && resilience >= 50
+    && [
+      (mobility % 10) <= 4,
+      (recovery % 10) <= 4,
+      (intellect % 10) <= 4,
+      (resilience % 10) <= 4,
+      (discipline % 10) <= 4
+    ].filter(n => n).length >= 3
+  );
+}
+
+export function presetPvEAbilitySpamHunterStandardLittleWaste(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience,
+    discipline,
+    intellect
+  } = getStatBuild(items);
+
+  return (
+    mobility >= 50
+    && recovery >= 50
+    && resilience <= 30
+    && [
+      (mobility % 10) <= 4,
+      (recovery % 10) <= 4,
+      (intellect % 10) <= 4,
+      (resilience % 10) <= 4,
+      (discipline % 10) <= 4
+    ].filter(n => n).length >= 5
+  );
+}
+
+export function presetPvEAbilitySpamWarlockStandardLittleWaste(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience,
+    discipline,
+    intellect
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 30
+    && recovery >= 50
+    && resilience <= 30
+    && [
+      (mobility % 10) <= 4,
+      (recovery % 10) <= 4,
+      (intellect % 10) <= 4,
+      (resilience % 10) <= 4,
+      (discipline % 10) <= 4
+    ].filter(n => n).length >= 5
+  );
+}
+
+export function presetPvEAbilitySpamTitanStandardLittleWaste(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    resilience,
+    discipline,
+    intellect
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 30
+    && recovery >= 50
+    && resilience >= 50
+    && [
+      (mobility % 10) <= 4,
+      (recovery % 10) <= 4,
+      (intellect % 10) <= 4,
+      (resilience % 10) <= 4,
+      (discipline % 10) <= 4
+    ].filter(n => n).length >= 5
+  );
+}
+
 export const presetList = [
   ['No Optimization', () => true],
   ['PvP - Standard', presetPvPStandard],
@@ -357,5 +546,14 @@ export const presetList = [
   ['PvP - Unchi Warlock',presetPvPUnchiWarlock ],
   ['PvP - Unchi Titan 6',presetPvPUnchiTitan],
   ['PvP - Warlock Trash Gear', presetPvPMinWarlock],
-  ['PvP - Warlock Minimum Gear', presetPvPWarlock]
+  ['PvP - Warlock Minimum Gear', presetPvPWarlock],
+  ['PvE - Hunter - Minimum - Ability Spam', presetPvEAbilitySpamHunter],
+  ['PvE - Hunter - Average - Ability Spam', presetPvEAbilitySpamHunterStandard],
+  ['PvE - Hunter - Above Average - Ability Spam', presetPvEAbilitySpamHunterStandardLittleWaste],
+  ['PvE - Warlock - Minimum - Ability Spam', presetPvEAbilitySpamWarlock],
+  ['PvE - Warlock - Average - Ability Spam', presetPvEAbilitySpamWarlockStandard],
+  ['PvE - Warlock - Above Average - Ability Spam', presetPvEAbilitySpamWarlockStandardLittleWaste],
+  ['PvE - Titan - Minimum - Ability Spam', presetPvEAbilitySpamTitan],
+  ['PvE - Titan - Average - Ability Spam', presetPvEAbilitySpamTitanStandard],
+  ['PvE - Titan - Above Average - Ability Spam', presetPvEAbilitySpamTitanStandardLittleWaste],
 ];

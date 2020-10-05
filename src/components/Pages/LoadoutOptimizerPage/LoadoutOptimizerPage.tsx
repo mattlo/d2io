@@ -170,15 +170,11 @@ export default function LoadoutOptimizerPage() {
             value={exotic}
           />
         </FormGroup>
-        <FormGroup label="Applied Filters">
-          <strong>Power Cap Minimum: 1260 / High Gear Only</strong>
-        </FormGroup>
-
         <hr />
       </div>
 
       <div>
-        Results: {combos.length} (only showing top 1000)
+        Results: {combos.length.toLocaleString()} (only showing top 1,000)
         <br />
       </div>
 
