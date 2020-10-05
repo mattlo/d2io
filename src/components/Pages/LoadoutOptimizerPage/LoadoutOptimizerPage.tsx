@@ -10,10 +10,7 @@ import {FormGroup, HTMLSelect, Spinner} from '@blueprintjs/core';
 import {CLASS_TYPE_HUNTER, CLASS_TYPE_TITAN, CLASS_TYPE_WARLOCK} from '../../../constants';
 import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryUtil';
 import {
-  getStatBuild, presetList, presetPvEPerfect,
-  presetPvEStandard, presetPvPLowGear, presetPvPLowResilience, presetPvPMinGear,
-  presetPvPPerfect, presetPvPPerfectLowResilience,
-  presetPvPStandard, presetPvPStandardResilience, presetPvPSuperLowResilience, presetPvPUnchi1
+  getStatBuild, presetList
 } from '../../../util/presetUtil';
 import ItemDisplay from '../../ItemDisplay/ItemDisplay';
 

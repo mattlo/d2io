@@ -7,7 +7,8 @@ export interface IErrorBoundaryProps {
 
 export default class ErrorBoundary extends Component<IErrorBoundaryProps> {
   state = {
-    hasError: false
+    hasError: false,
+    error: new Error('')
   };
 
   static getDerivedStateFromError(error : Error) {
@@ -20,6 +21,7 @@ export default class ErrorBoundary extends Component<IErrorBoundaryProps> {
     console.debug('caught error within ErrorBoundary');
     // eslint-disable-next-line no-console
     console.error(error, info);
+    this.setState({error});
     // @TODO add client side error logging here
   }
 
@@ -29,6 +31,11 @@ export default class ErrorBoundary extends Component<IErrorBoundaryProps> {
     ) : (
       <div>
         {this.props.defaultErrorMessage || 'An error has occurred on this page.'}
+        <pre style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
+          {this.state.error.message}
+          {'\n'}
+          {this.state.error.stack}
+        </pre>
       </div>
     );
   }

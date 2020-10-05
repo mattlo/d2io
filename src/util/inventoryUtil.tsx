@@ -177,6 +177,8 @@ export function getInventoryContent(profile : any, contentMap : any) {
       item.itemInstanceId
       && contentMap[item.itemHash].equippingBlock
       && contentMap[item.itemHash].quality
+      && stats[item.itemInstanceId]
+      && stats[item.itemInstanceId].stats
       // must have an armor stat
       && stats[item.itemInstanceId].stats[STAT_TYPE_INTELLECT]
     ))
