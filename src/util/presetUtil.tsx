@@ -294,8 +294,6 @@ export function presetPvPUnchiTitan(items : any[], totalFloor = 220) {
   );
 }
 
-
-
 export function presetPvPMinWarlock(items : any[], totalFloor = 220) {
   const {
     mobility,
@@ -321,6 +319,28 @@ export function presetPvPMinWarlock(items : any[], totalFloor = 220) {
   );
 }
 
+export function presetPvPWarlock(items : any[], totalFloor = 220) {
+  const {
+    mobility,
+    recovery,
+    discipline,
+    strength,
+    resilience
+  } = getStatBuild(items);
+
+  return (
+    mobility <= 39
+    && (mobility % 10) >= 5
+    && recovery >= 50
+    && resilience <= 24
+    && [
+      (recovery % 10) <= 4,
+      (discipline % 10) <= 4,
+      (strength % 10) <= 4
+    ].filter(n => n).length >= 2
+  );
+}
+
 export const presetList = [
   ['No Optimization', () => true],
   ['PvP - Standard', presetPvPStandard],
@@ -336,5 +356,6 @@ export const presetList = [
   ['PvP - Unchi Hunter', presetPvPUnchi1],
   ['PvP - Unchi Warlock',presetPvPUnchiWarlock ],
   ['PvP - Unchi Titan 6',presetPvPUnchiTitan],
-  ['PvP - Warlock Minimum Gear', presetPvPMinWarlock]
+  ['PvP - Warlock Trash Gear', presetPvPMinWarlock],
+  ['PvP - Warlock Minimum Gear', presetPvPWarlock]
 ];
