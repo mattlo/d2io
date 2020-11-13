@@ -19,7 +19,7 @@ export default function ItemDisplay({items, stats, mode} : any) {
   const isPvP = mode.indexOf('PvP') >= 0;
 
   const totalStats = [
-    ['Mobility', mobility, isPvP ? 35 : 10],
+    ['Mobility', mobility, isPvP ? 30 : 10],
     ['Resilience', resilience, 10],
     ['Recovery', recovery, 10],
     ['Discipline', discipline, 10],

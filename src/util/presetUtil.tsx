@@ -33,7 +33,7 @@ export function presetPvPStandard(items : any[], totalFloor = 220) {
     mobility <= 59
     && recovery >= 60
     // traction
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     // must all be moderate levels of stats
     && [
       (recovery % 10) <= 4,
@@ -61,7 +61,7 @@ export function presetPvPStandardResilience(items : any[], totalFloor = 220) {
     mobility <= 59
     && recovery >= 60
     // traction
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     // must all be moderate levels of stats
     && [
       (recovery % 10) <= 2,
@@ -88,7 +88,7 @@ export function presetPvPPerfect(items : any[], totalFloor = 220) {
     mobility <= 59
     && recovery >= 60
     // traction
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     && resilience <= 30
     // must all be moderate levels of stats
     && [
@@ -114,7 +114,7 @@ export function presetPvPPerfectLowResilience(items : any[], totalFloor = 220) {
   return (
     recovery >= 60
     // traction
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     && resilience >= 10
     && resilience <= 12
     // must all be moderate levels of stats
@@ -223,7 +223,7 @@ export function presetPvPLowGear(items : any[], totalFloor = 220) {
   return (
     mobility <= 59
     // traction
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     && resilience <= 30
     // must all be moderate levels of stats
     && [
@@ -249,7 +249,7 @@ export function presetPvPUnchi1(items : any[], totalFloor = 220) {
     mobility <= 59
     && ((mobility + recovery)) >= ((59 + 100) - 50)
     // traction
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     && resilience >= 10
     && resilience <= 12
     && (recovery % 10) <= 4
@@ -270,7 +270,7 @@ export function presetPvPUnchiWarlock(items : any[], totalFloor = 220) {
     mobility <= 19
     && ((mobility + recovery)) >= ((19 + 100) - 50)
     // traction
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     && resilience >= 10
     && resilience <= 22
     && (recovery % 10) <= 4
@@ -307,7 +307,7 @@ export function presetPvPMinWarlock(items : any[], totalFloor = 220) {
   return (
     mobility <= 39
     // traction
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     && recovery >= 50
     // && strength >= 50
     // && discipline >= 50
@@ -330,7 +330,7 @@ export function presetPvPWarlock(items : any[], totalFloor = 220) {
 
   return (
     mobility <= 39
-    && (mobility % 10) >= 5
+    && (mobility % 10) <= 4
     && recovery >= 50
     && resilience <= 24
     && [
