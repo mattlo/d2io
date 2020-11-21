@@ -19,6 +19,10 @@ export function getStatBuild(items : any[]) {
   };
 }
 
+export function isViableStat(value : number) {
+  return (value % 10 >= 5 && value % 10 <= 7) || value % 10 <= 2
+}
+
 export function presetPvPStandard(items : any[], totalFloor = 220) {
   const {
     mobility,
@@ -85,18 +89,16 @@ export function presetPvPPerfect(items : any[], totalFloor = 220) {
   } = getStatBuild(items);
 
   return (
-    mobility <= 59
-    && recovery >= 60
-    // traction
-    && (mobility % 10) <= 4
+    recovery >= 60
     && resilience <= 30
     // must all be moderate levels of stats
     && [
-      (resilience % 10) <= 2,
-      (recovery % 10) <= 2,
-      (intellect % 10) <= 2,
-      (discipline % 10) <= 2,
-      (strength % 10) <= 2
+      isViableStat(mobility),
+      isViableStat(resilience),
+      isViableStat(recovery),
+      isViableStat(intellect),
+      isViableStat(discipline),
+      isViableStat(strength)
     ].filter(n => n).length >= 5
   );
 }
@@ -112,18 +114,18 @@ export function presetPvPPerfectLowResilience(items : any[], totalFloor = 220) {
   } = getStatBuild(items);
 
   return (
-    recovery >= 60
-    // traction
-    && (mobility % 10) <= 4
+    recovery >= 80
+    && mobility >= 40
     && resilience >= 10
-    && resilience <= 12
+    && resilience <= 14
     // must all be moderate levels of stats
     && [
-      (recovery % 10) <= 2,
-      (intellect % 10) <= 2,
-      (discipline % 10) <= 2,
-      (strength % 10) <= 2
-    ].filter(n => n).length >= 4
+      isViableStat(mobility),
+      isViableStat(recovery),
+      isViableStat(discipline),
+      isViableStat(strength),
+      (intellect % 10) <= 4,
+    ].filter(n => n).length >= 5
   );
 }
 
