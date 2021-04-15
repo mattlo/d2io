@@ -20,7 +20,7 @@ export function getStatBuild(items : any[]) {
 }
 
 export function isViableStat(value : number) {
-  return (value % 10 >= 5 && value % 10 <= 7) || value % 10 <= 2
+  return (value % 10 >= 5 && value % 10 <= 7) || value % 10 <= 3
 }
 
 export function presetPvPStandard(items : any[], totalFloor = 220) {
@@ -191,12 +191,13 @@ export function presetPvPLowResilience(items : any[], totalFloor = 220) {
 
 export function presetPvPSuperLowResilience(items : any[], totalFloor = 220) {
   const {
-    resilience
+    resilience,
+    mobility,
+    recovery
   } = getStatBuild(items);
 
   return (
-    resilience >= 10
-    && resilience <= 12
+    (mobility + recovery) >= 125
   );
 }
 
@@ -468,7 +469,6 @@ export function presetPvEAbilitySpamHunterStandardLittleWaste(items : any[], tot
     mobility,
     recovery,
     resilience,
-    discipline,
     intellect
   } = getStatBuild(items);
 
@@ -477,12 +477,11 @@ export function presetPvEAbilitySpamHunterStandardLittleWaste(items : any[], tot
     && recovery >= 50
     && resilience <= 30
     && [
-      (mobility % 10) <= 4,
-      (recovery % 10) <= 4,
-      (intellect % 10) <= 4,
-      (resilience % 10) <= 4,
-      (discipline % 10) <= 4
-    ].filter(n => n).length >= 5
+      isViableStat(mobility),
+      isViableStat(recovery),
+      isViableStat(intellect),
+      isViableStat(resilience)
+    ].filter(n => n).length >= 4
   );
 }
 
