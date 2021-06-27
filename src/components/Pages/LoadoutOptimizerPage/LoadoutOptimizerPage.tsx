@@ -22,7 +22,7 @@ export default function LoadoutOptimizerPage() {
   const [mainClass, setMainClass] = useState('');
   const [exotic, setExotic] = useState('');
   const [minMobility, setFastMinMobility] = useState(50);
-  const [minResilience, setFastMinResilience] = useState(20);
+  const [minResilience, setFastMinResilience] = useState(10);
   const [minRecovery, setFastMinRecovery] = useState(60);
   const [minDiscipline, setFastMinDiscipline] = useState(1);
   const [minIntelligence, setFastMinIntelligence] = useState(1);
