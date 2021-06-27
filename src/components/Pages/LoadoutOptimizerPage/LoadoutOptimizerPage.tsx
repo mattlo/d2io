@@ -243,8 +243,8 @@ export default function LoadoutOptimizerPage() {
               setFastMinStrength(n);
             }],
           ].map(([label, value, onChange] : any) => (
-            <div>
-              <FormGroup label={label} key={label}>
+            <div key={label}>
+              <FormGroup label={label}>
                 <Slider
                   min={0}
                   max={100}
