@@ -7,7 +7,7 @@ import {getManifest, getProfile} from '../../../api/bungieApi';
 import {setComponentContent, setManifest} from '../../../state/actions/manifest';
 import {setProfile} from '../../../state/actions/profile';
 import axios from 'axios';
-import {FormGroup, HTMLSelect, Slider, Spinner} from '@blueprintjs/core';
+import {FormGroup, HTMLSelect, Slider, Spinner, Switch} from '@blueprintjs/core';
 import {CLASS_TYPE_HUNTER, CLASS_TYPE_TITAN, CLASS_TYPE_WARLOCK} from '../../../constants';
 import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryUtil';
 import {
@@ -18,7 +18,7 @@ import ItemDisplay from '../../ItemDisplay/ItemDisplay';
 export default function LoadoutOptimizerPage() {
   const {state, dispatch} = useGlobalState();
   const [isLoading, setIsLoading] = useState(true);
-  const [mode, setMode] = useState('No Optimization');
+  const [mode, setMode] = useState('PvP');
   const [mainClass, setMainClass] = useState('');
   const [exotic, setExotic] = useState('');
   const [minMobility, setFastMinMobility] = useState(50);
@@ -114,7 +114,7 @@ export default function LoadoutOptimizerPage() {
       items: inventoryData,
       mainClass
     })
-  ), [inventoryData, mainClass]);
+  ), [inventoryData, mainClass, exotic]);
 
   const exotics = uniqBy(
     inventoryData.filter(i => i.exotic && i.classType.toString() === mainClass.toString()),
@@ -189,34 +189,50 @@ export default function LoadoutOptimizerPage() {
 
   return (
     <div style={{padding: 15}}>
-      <div style={{width: 320}}>
-        <FormGroup label="Class">
-          <HTMLSelect
-            options={[
-              {label: '', value: ''},
-              {label: 'Titan', value: CLASS_TYPE_TITAN},
-              {label: 'Hunter', value: CLASS_TYPE_HUNTER},
-              {label: 'Warlock', value: CLASS_TYPE_WARLOCK}
-            ]}
-            onChange={onMainClassChange}
-            value={mainClass}
-          />
-        </FormGroup>
-        <FormGroup label="Exotic">
-          <HTMLSelect
-            options={[
-              {label: '-- No Exotic --', value: ''},
-              ...exotics.map(item => ({
-                label: item.content.displayProperties.name,
-                value: item.itemHash
-              }))
-            ]}
-            onChange={onExotic}
-            value={exotic}
-          />
-        </FormGroup>
+      <div style={{maxWidth: 700}}>
+        <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+          {/*  onModeChange*/}
+          <div>
+            <FormGroup label="Class">
+              <HTMLSelect
+                options={[
+                  {label: '', value: ''},
+                  {label: 'Titan', value: CLASS_TYPE_TITAN},
+                  {label: 'Hunter', value: CLASS_TYPE_HUNTER},
+                  {label: 'Warlock', value: CLASS_TYPE_WARLOCK}
+                ]}
+                onChange={onMainClassChange}
+                value={mainClass}
+              />
+            </FormGroup>
+          </div>
+          <div>
+            <FormGroup label="Type">
+              <HTMLSelect
+                options={['PvP', 'PvE']}
+                value={mode}
+                onChange={onModeChange}
+              />
+            </FormGroup>
+          </div>
+          <div>
+            <FormGroup label="Exotic">
+              <HTMLSelect
+                options={[
+                  {label: '-- No Exotic --', value: ''},
+                  ...exotics.map(item => ({
+                    label: item.content.displayProperties.name,
+                    value: item.itemHash
+                  }))
+                ]}
+                onChange={onExotic}
+                value={exotic}
+              />
+            </FormGroup>
+          </div>
+        </div>
 
-        <div>
+        <div style={{display: 'flex', flexWrap: 'wrap', gap: '20px'}}>
           {[
             ['Min Mobility', minMobility, (n : number) => {
               setMinMobility(n);
@@ -243,7 +259,7 @@ export default function LoadoutOptimizerPage() {
               setFastMinStrength(n);
             }],
           ].map(([label, value, onChange] : any) => (
-            <div key={label}>
+            <div style={{flex: '0 0 45%'}} key={label}>
               <FormGroup label={label}>
                 <Slider
                   min={0}
