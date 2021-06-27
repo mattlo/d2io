@@ -1,12 +1,13 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {css} from 'react-emotion';
 import uniqBy from 'lodash/uniqBy';
+import debounce from 'lodash/debounce';
 import {useGlobalState} from '../../../hooks/useGlobalState';
 import {getManifest, getProfile} from '../../../api/bungieApi';
 import {setComponentContent, setManifest} from '../../../state/actions/manifest';
 import {setProfile} from '../../../state/actions/profile';
 import axios from 'axios';
-import {FormGroup, HTMLSelect, Spinner} from '@blueprintjs/core';
+import {FormGroup, HTMLSelect, Slider, Spinner} from '@blueprintjs/core';
 import {CLASS_TYPE_HUNTER, CLASS_TYPE_TITAN, CLASS_TYPE_WARLOCK} from '../../../constants';
 import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryUtil';
 import {
@@ -20,6 +21,26 @@ export default function LoadoutOptimizerPage() {
   const [mode, setMode] = useState('No Optimization');
   const [mainClass, setMainClass] = useState('');
   const [exotic, setExotic] = useState('');
+  const [minMobility, setFastMinMobility] = useState(50);
+  const [minResilience, setFastMinResilience] = useState(20);
+  const [minRecovery, setFastMinRecovery] = useState(60);
+  const [minDiscipline, setFastMinDiscipline] = useState(1);
+  const [minIntelligence, setFastMinIntelligence] = useState(1);
+  const [minStrength, setFastMinStrength] = useState(1);
+
+  const [minDebounceMobility, setDebounceMinMobility] = useState(minMobility);
+  const [minDebounceResilience, setDebounceMinResilience] = useState(minResilience);
+  const [minDebounceRecovery, setDebounceMinRecovery] = useState(minRecovery);
+  const [minDebounceDiscipline, setDebounceMinDiscipline] = useState(minDiscipline);
+  const [minDebounceIntelligence, setDebounceMinIntelligence] = useState(minIntelligence);
+  const [minDebounceStrength, setDebounceMinStrength] = useState(minStrength);
+
+  const setMinMobility = useMemo(() => debounce(setDebounceMinMobility, 900), []);
+  const setMinResilience = useMemo(() => debounce(setDebounceMinResilience, 900), []);
+  const setMinRecovery = useMemo(() => (debounce(setDebounceMinRecovery, 900)), []);
+  const setMinStrength = useMemo(() => (debounce(setDebounceMinStrength, 900)), []);
+  const setMinIntelligence = useMemo(() => (debounce(setDebounceMinIntelligence, 900)), []);
+  const setMinDiscipline = useMemo(() => (debounce(setDebounceMinDiscipline, 900)), []);
 
   // // get data
   useEffect(() => {
@@ -86,12 +107,14 @@ export default function LoadoutOptimizerPage() {
     )
   }, [state.profile, state.componentContent]);
 
-  const categorizedItems = filterAndCategorize({
-    powerCap: 1260,
-    exoticItem: inventoryData.filter(i => i.itemHash.toString() === exotic.toString())[0] || {},
-    items: inventoryData,
-    mainClass
-  })
+  const categorizedItems = useMemo(() => (
+    filterAndCategorize({
+      powerCap: 1260,
+      exoticItem: inventoryData.filter(i => i.itemHash.toString() === exotic.toString())[0] || {},
+      items: inventoryData,
+      mainClass
+    })
+  ), [inventoryData, mainClass]);
 
   const exotics = uniqBy(
     inventoryData.filter(i => i.exotic && i.classType.toString() === mainClass.toString()),
@@ -99,6 +122,35 @@ export default function LoadoutOptimizerPage() {
   );
 
   const {helmets, gauntlets, chests, legs} = categorizedItems;
+
+  const filterFn = useCallback((items : any[], totalFloor = 220) => {
+    const {
+      mobility,
+      recovery,
+      discipline,
+      intellect,
+      strength,
+      total,
+      resilience
+    } = getStatBuild(items);
+
+    return (
+      mobility >= minDebounceMobility &&
+      resilience >= minDebounceResilience &&
+      recovery >= minDebounceRecovery &&
+      intellect >= minDebounceIntelligence &&
+      strength >= minDebounceStrength &&
+      discipline >= minDebounceDiscipline &&
+      total >= totalFloor
+    )
+  }, [
+    minDebounceMobility,
+    minDebounceResilience,
+    minDebounceRecovery,
+    minDebounceDiscipline,
+    minDebounceIntelligence,
+    minDebounceStrength
+  ]);
 
   const combos : any[] = useMemo(() => {
     const items : any = [];
@@ -112,7 +164,7 @@ export default function LoadoutOptimizerPage() {
         chests.forEach((chest : any) => {
           legs.forEach((leg : any) => {
             const set = [helmet, gauntlet, chest, leg];
-            if (preset && preset(set)) {
+            if (filterFn(set)) {
               items.push(({
                 set,
                 stats: getStatBuild(set)
@@ -124,7 +176,7 @@ export default function LoadoutOptimizerPage() {
     });
 
     return items.sort((a : any, b : any) => b.stats.total - a.stats.total);
-  }, [helmets, gauntlets, chests, legs, mode]);
+  }, [helmets, gauntlets, chests, legs, mode, filterFn]);
 
   if (isLoading && inventoryData.length === 0) {
     return (
@@ -138,13 +190,6 @@ export default function LoadoutOptimizerPage() {
   return (
     <div style={{padding: 15}}>
       <div style={{width: 320}}>
-        <FormGroup label="Optimizer Presets">
-          <HTMLSelect
-            options={presetList.map(([name]) => name) as string[]}
-            onChange={onModeChange}
-            value={mode}
-          />
-        </FormGroup>
         <FormGroup label="Class">
           <HTMLSelect
             options={[
@@ -170,6 +215,49 @@ export default function LoadoutOptimizerPage() {
             value={exotic}
           />
         </FormGroup>
+
+        <div>
+          {[
+            ['Min Mobility', minMobility, (n : number) => {
+              setMinMobility(n);
+              setFastMinMobility(n)
+            }],
+            ['Min Resilience', minResilience, (n : number) => {
+              setMinResilience(n);
+              setFastMinResilience(n);
+            }],
+            ['Min Recovery', minRecovery, (n : number) => {
+              setMinRecovery(n);
+              setFastMinRecovery(n);
+            }],
+            ['Min Discipline', minDiscipline, (n : number) => {
+              setMinDiscipline(n);
+              setFastMinDiscipline(n);
+            }],
+            ['Min Intelligence', minIntelligence, (n : number) => {
+              setMinIntelligence(n);
+              setFastMinIntelligence(n);
+            }],
+            ['Min Strength', minStrength, (n : number) => {
+              setMinStrength(n);
+              setFastMinStrength(n);
+            }],
+          ].map(([label, value, onChange] : any) => (
+            <div>
+              <FormGroup label={label} key={label}>
+                <Slider
+                  min={0}
+                  max={100}
+                  stepSize={1}
+                  labelStepSize={10}
+                  onChange={onChange}
+                  value={value}
+                />
+              </FormGroup>
+            </div>
+          ))}
+        </div>
+
         <hr />
       </div>
 
@@ -178,14 +266,16 @@ export default function LoadoutOptimizerPage() {
         <br />
       </div>
 
-      {mode && combos.filter((x : any, i : number) => i < 1000).map(({set, stats}, index) => (
-        <ItemDisplay
-          key={index}
-          items={set}
-          stats={stats}
-          mode={mode}
-        />
-      ))}
+      <div style={{transform: 'translateZ(0)'}}>
+        {mode && combos.filter((x : any, i : number) => i < 250).map(({set, stats}, index) => (
+          <ItemDisplay
+            key={index}
+            items={set}
+            stats={stats}
+            mode={mode}
+          />
+        ))}
+      </div>
     </div>
   );
 }

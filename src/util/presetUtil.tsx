@@ -73,7 +73,7 @@ export function presetPvPStandardResilience(items : any[], totalFloor = 220) {
       (discipline % 10) <= 2,
       (strength % 10) <= 2
     ].filter(n => n).length >= 3
-    && resilience <= 20
+    && resilience <= 24
     && total >= totalFloor
   );
 }
@@ -90,11 +90,11 @@ export function presetPvPPerfect(items : any[], totalFloor = 220) {
 
   return (
     recovery >= 60
-    && resilience <= 30
+    && resilience <= 26
     // must all be moderate levels of stats
     && [
       isViableStat(mobility),
-      isViableStat(resilience),
+      (resilience % 10) <= 4,
       isViableStat(recovery),
       isViableStat(intellect),
       isViableStat(discipline),
@@ -117,7 +117,7 @@ export function presetPvPPerfectLowResilience(items : any[], totalFloor = 220) {
     recovery >= 80
     && mobility >= 40
     && resilience >= 10
-    && resilience <= 14
+    && resilience <= 16
     // must all be moderate levels of stats
     && [
       isViableStat(mobility),
