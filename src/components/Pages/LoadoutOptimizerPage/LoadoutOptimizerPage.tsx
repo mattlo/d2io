@@ -7,7 +7,15 @@ import {getManifest, getProfile} from '../../../api/bungieApi';
 import {setComponentContent, setManifest} from '../../../state/actions/manifest';
 import {setProfile} from '../../../state/actions/profile';
 import axios from 'axios';
-import {FormGroup, HTMLSelect, Slider, Spinner, Switch} from '@blueprintjs/core';
+import {
+  Divider,
+  FormGroup,
+  HTMLSelect,
+  ProgressBar,
+  Slider,
+  Spinner,
+  Switch
+} from '@blueprintjs/core';
 import {CLASS_TYPE_HUNTER, CLASS_TYPE_TITAN, CLASS_TYPE_WARLOCK} from '../../../constants';
 import {filterAndCategorize, getInventoryContent} from '../../../util/inventoryUtil';
 import {
@@ -41,6 +49,14 @@ export default function LoadoutOptimizerPage() {
   const setMinStrength = useMemo(() => (debounce(setDebounceMinStrength, 900)), []);
   const setMinIntelligence = useMemo(() => (debounce(setDebounceMinIntelligence, 900)), []);
   const setMinDiscipline = useMemo(() => (debounce(setDebounceMinDiscipline, 900)), []);
+
+  const onDragContainerRef = (node : any) => {
+    if (node) {
+      node.addEventListener('touchmove', function (e : any) {
+        e.preventDefault();
+      }, {passive: false});
+    }
+  }
 
   // // get data
   useEffect(() => {
@@ -180,18 +196,45 @@ export default function LoadoutOptimizerPage() {
 
   if (isLoading && inventoryData.length === 0) {
     return (
-      <div>
-        <Spinner className={css`justify-content: flex-start;`} />
-        Loading profile data...
+      <div style={{display: 'flex', padding: 15, justifyContent: 'center'}}>
+        <div style={{maxWidth: 500, width: '100%', textAlign: 'center'}}>
+          <Spinner tagName="span" />
+          <br />
+          Loading profile data...
+        </div>
       </div>
     )
   }
+
+  const total = minMobility + minResilience + minRecovery + minDiscipline + minIntelligence + minStrength;
+  const ratio = total / 280;
+
+  const getPerfectionIntent = () => {
+    if (combos.length === 0) {
+      return undefined;
+    }
+
+    if (ratio <= 0.3) {
+      return 'primary';
+    }
+
+    if (ratio <= 0.55) {
+      return 'success';
+    }
+
+    if (ratio <= 1) {
+      return 'warning';
+    }
+
+    if (ratio > 1) {
+      return 'danger';
+    }
+  };
 
   return (
     <div style={{padding: 15}}>
       <div style={{maxWidth: 700}}>
         <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
-          {/*  onModeChange*/}
           <div>
             <FormGroup label="Class">
               <HTMLSelect
@@ -215,7 +258,7 @@ export default function LoadoutOptimizerPage() {
               />
             </FormGroup>
           </div>
-          <div>
+          <div style={{display: mainClass === '' ? 'none' : 'block'}}>
             <FormGroup label="Exotic">
               <HTMLSelect
                 options={[
@@ -232,57 +275,109 @@ export default function LoadoutOptimizerPage() {
           </div>
         </div>
 
-        <div style={{display: 'flex', flexWrap: 'wrap', gap: '20px'}}>
+        <div style={{margin: '15px 0', display: mainClass === '' ? 'none' : 'block'}}>
+          <FormGroup
+            label={(
+              <div>
+                Perfection Meter
+
+                <strong>
+                  {ratio <= 1 ? ` (${Math.round(total / 280 * 100)}%)` : '🚨 Too Much!'}
+                </strong>
+
+                {' '}
+
+                {combos.length > 0 && (
+                  <>
+                    {ratio >= 0.91 && ratio <= 1 && (
+                      <div>
+                        <strong>
+                          High stat territory.
+                        </strong>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {combos.length === 0 && ratio <= 1 && (
+                  <>
+                    {' 😥 no results, get better gear'}
+                  </>
+                )}
+              </div>
+            )}
+          >
+            <ProgressBar
+              value={ratio}
+              intent={getPerfectionIntent()}
+              animate={false}
+              stripes={false}
+            />
+          </FormGroup>
+
+        </div>
+
+        <div
+          style={{flexWrap: 'wrap', gap: '20px', display: mainClass === '' ? 'none' : 'flex'}}
+        >
           {[
-            ['Min Mobility', minMobility, (n : number) => {
+            ['Base Min Mobility', minMobility, (n : number) => {
               setMinMobility(n);
               setFastMinMobility(n)
             }],
-            ['Min Resilience', minResilience, (n : number) => {
+            ['Base Min Resilience', minResilience, (n : number) => {
               setMinResilience(n);
               setFastMinResilience(n);
             }],
-            ['Min Recovery', minRecovery, (n : number) => {
+            ['Base Min Recovery', minRecovery, (n : number) => {
               setMinRecovery(n);
               setFastMinRecovery(n);
             }],
-            ['Min Discipline', minDiscipline, (n : number) => {
+            ['Base Min Discipline', minDiscipline, (n : number) => {
               setMinDiscipline(n);
               setFastMinDiscipline(n);
             }],
-            ['Min Intelligence', minIntelligence, (n : number) => {
+            ['Base Min Intelligence', minIntelligence, (n : number) => {
               setMinIntelligence(n);
               setFastMinIntelligence(n);
             }],
-            ['Min Strength', minStrength, (n : number) => {
+            ['Base Min Strength', minStrength, (n : number) => {
               setMinStrength(n);
               setFastMinStrength(n);
             }],
           ].map(([label, value, onChange] : any) => (
-            <div style={{flex: '0 0 45%'}} key={label}>
+            <div
+              style={{flex: '0 0 45%', padding: '5px'}}
+              key={label}
+            >
               <FormGroup label={label}>
-                <Slider
-                  min={0}
-                  max={100}
-                  stepSize={1}
-                  labelStepSize={10}
-                  onChange={onChange}
-                  value={value}
-                />
+                <div ref={onDragContainerRef}>
+                  <Slider
+                    min={0}
+                    max={100}
+                    stepSize={1}
+                    labelStepSize={25}
+                    onChange={onChange}
+                    value={value}
+                  />
+                </div>
+
               </FormGroup>
             </div>
           ))}
         </div>
 
-        <hr />
+        <Divider style={{'borderColor': '#333', margin: '20px 0'}} />
       </div>
 
-      <div>
-        Results: {combos.length.toLocaleString()} (only showing top 1,000)
+      <div style={{display: mainClass === '' ? 'none' : 'block'}}>
+        Results: {combos.length.toLocaleString()} (only showing top 250)
         <br />
       </div>
 
-      <div style={{transform: 'translateZ(0)'}}>
+      <div
+        style={{transform: 'translateZ(0)', display: mainClass === '' ? 'none' : 'block'}}
+      >
         {mode && combos.filter((x : any, i : number) => i < 250).map(({set, stats}, index) => (
           <ItemDisplay
             key={index}

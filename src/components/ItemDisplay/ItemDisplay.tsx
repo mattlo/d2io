@@ -35,7 +35,13 @@ export default function ItemDisplay({items, stats, mode} : any) {
         color: #fff;
         background: #000;
         width: 500px;
-        padding: 10px;
+        padding: 10px 10px 10px 0;
+        overflow-x: auto;
+        width: 100%;
+        
+        @media (max-width: 500px) {
+          font-size: 14px;
+        }
       `}
     >
 

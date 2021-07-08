@@ -4,13 +4,14 @@ import {Redirect, RouteComponentProps, useHistory} from 'react-router';
 import {getMembershipsForCurrentUser, getAuthToken} from '../../../api/bungieApi';
 import setUserAuth from '../../../state/actions/userToken';
 import {useGlobalState} from '../../../hooks/useGlobalState';
+import {Spinner} from '@blueprintjs/core';
 
 export default function OAuthCallbackPage({location} : RouteComponentProps) {
   const {dispatch, state} = useGlobalState();
   const history = useHistory();
 
   useEffect(() => {
-    const query : {code ?: string} = qs.parse(location.search);
+    const query : {code? : string} = qs.parse(location.search);
 
     if (query.code) {
       getAuthToken(query.code || '')
@@ -46,8 +47,12 @@ export default function OAuthCallbackPage({location} : RouteComponentProps) {
   }
 
   return (
-    <div>
-      authenticating...
+    <div style={{display: 'flex', padding: 15, justifyContent: 'center'}}>
+      <div style={{maxWidth: 500, width: '100%', textAlign: 'center'}}>
+        <Spinner />
+        <br />
+        Authenticating and downloading inventory...
+      </div>
     </div>
   );
 }
